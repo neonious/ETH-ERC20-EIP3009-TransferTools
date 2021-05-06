@@ -303,12 +303,14 @@ exports.getHistory = async function getHistory(web3, tokenAddr, addresses, fromB
 	if (fromBlock === null || fromBlock === undefined)
 		fromBlock = res.nextBlock - 1;
 
-	let addressObj = {};
+	let addressObj = {}, allAddresses;
 	if (typeof addresses == 'string')
 		addressObj[addresses] = true;
 	else if (addresses)
 		for (let i = 0; i < addresses.length; i++)
 			addressObj[addresses[i]] = true;
+	else
+		allAddresses = true;
 
 	if (tokenAddr) {
 		if (!erc20Contracts[tokenAddr])
@@ -316,7 +318,7 @@ exports.getHistory = async function getHistory(web3, tokenAddr, addresses, fromB
 
 		const raw = await erc20Contracts[tokenAddr].getPastEvents("Transfer", { fromBlock: fromBlock ? fromBlock : 0 });
 		for (let i = 0; i < raw.length; i++)
-			if (raw[i].address == tokenAddr && (!addressObj.length || addressObj[raw[i].returnValues[0]] || addressObj[raw[i].returnValues[1]]))
+			if (raw[i].address == tokenAddr && (allAddresses || addressObj[raw[i].returnValues[0]] || addressObj[raw[i].returnValues[1]]))
 				res.transfers.push({
 					transaction: raw[i].transactionHash,
 					from: raw[i].returnValues[0],
@@ -329,7 +331,7 @@ exports.getHistory = async function getHistory(web3, tokenAddr, addresses, fromB
 			const block = await web3.eth.getBlock(i, true);
 			if (block.transactions.length)
 				for (let j = 0; j < block.transactions.length; j++) {
-					if ((block.transactions[j].value | 0) && (!addressObj.length || addressObj[block.transactions[j].from] || addressObj[block.transactions[j].to]))
+					if ((block.transactions[j].value | 0) && (allAddresses || addressObj[block.transactions[j].from] || addressObj[block.transactions[j].to]))
 						res.transfers.push({
 							transaction: block.transactions[j].hash,
 							from: block.transactions[j].from,
