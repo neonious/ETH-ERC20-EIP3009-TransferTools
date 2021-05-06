@@ -14,7 +14,7 @@ const INITIAL_ETH_ACCOUNT = {
         privateKey: '0x28949df9705ea27b1ac3e8a3297002345eb10b742855f59d379354a6e2dd29a2'
 };
 // If not set, we create contract in run() below
-let EIP3009_TESTTOKEN_CONTRACT = '0xD54d2a166AFC1b914cfeCCb339C0d1EbFE5eC6d2';
+let EIP3009_TESTTOKEN_CONTRACT;// = '0xD54d2a166AFC1b914cfeCCb339C0d1EbFE5eC6d2';
 
 async function run() {
         console.log("Node ready:", await funcs.isNodeReady(web3));

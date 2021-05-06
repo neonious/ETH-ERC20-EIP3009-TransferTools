@@ -2,7 +2,9 @@
 
 /*
  * compileContracts.js
- * My script to compile .sol to .json. Not needed for running the wallet.
+ *
+ * My script to compile eip-3009-token.json from the contract code in eip-3009
+ * No need for running it, as eip-3009-token.json is pushed in this repository
  */
 
 const fs = require('fs');
