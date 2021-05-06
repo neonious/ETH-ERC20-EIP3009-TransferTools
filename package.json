@@ -1,0 +1,16 @@
+{
+  "name": "ETH+ERC20+EIP3009+TransferTools",
+  "version": "1.0.0",
+  "description": "Node.JS API for transfer of ETH + ERC20, delegated (gasless) transfer via EIP-3009 as supported by USDC, and misc functions. Also includes full unit test for transfer functions.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Neonious GmbH",
+  "license": "MIT",
+  "dependencies": {
+    "@openzeppelin/contracts": "3.4.0",
+    "eth-sig-util": "^3.0.1",
+    "solc": "0.6.12"
+  }
+}
