@@ -1,0 +1,3 @@
+[submodule "eip-3009"]
+	path = eip-3009
+	url = https://github.com/CoinbaseStablecoin/eip-3009
