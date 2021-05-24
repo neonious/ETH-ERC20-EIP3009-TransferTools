@@ -316,16 +316,19 @@ exports.getHistory = async function getHistory(web3, tokenAddr, addresses, fromB
 		if (!erc20Contracts[tokenAddr])
 			erc20Contracts[tokenAddr] = new web3.eth.Contract(ERC20_ABI, tokenAddr);
 
-		const raw = await erc20Contracts[tokenAddr].getPastEvents("Transfer", { fromBlock: fromBlock ? fromBlock : 0 });
-		for (let i = 0; i < raw.length; i++)
-			if (raw[i].address == tokenAddr && (allAddresses || addressObj[raw[i].returnValues[0]] || addressObj[raw[i].returnValues[1]]))
-				res.transfers.push({
-					transaction: raw[i].transactionHash,
-					from: raw[i].returnValues[0],
-					to: raw[i].returnValues[1],
-					amount: human ? raw[i].returnValues[2] * fac : raw[i].returnValues[2],
-					timestamp: (await web3.eth.getBlock(raw[i].blockNumber)).timestamp
-				});
+		// To be safe, we do block to block, because otherwise the JSON gets too big for web3
+		for (let b = fromBlock | 0; b < res.nextBlock; b++) {
+			const raw = await erc20Contracts[tokenAddr].getPastEvents("Transfer", { fromBlock: b, toBlock: b });
+			for (let i = 0; i < raw.length; i++)
+				if (raw[i].address == tokenAddr && (allAddresses || addressObj[raw[i].returnValues[0]] || addressObj[raw[i].returnValues[1]]))
+					res.transfers.push({
+						transaction: raw[i].transactionHash,
+						from: raw[i].returnValues[0],
+						to: raw[i].returnValues[1],
+						amount: human ? raw[i].returnValues[2] * fac : raw[i].returnValues[2],
+						timestamp: (await web3.eth.getBlock(raw[i].blockNumber)).timestamp
+					});
+		}
 	} else {
 		for (let i = fromBlock | 0; i < res.nextBlock; i++) {
 			const block = await web3.eth.getBlock(i, true);
